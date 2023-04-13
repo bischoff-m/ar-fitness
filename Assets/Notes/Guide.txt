@@ -1,0 +1,3 @@
+
+ARCore was substituted by AR Foundation
+https://developers.google.com/ar/develop/unity-arf/getting-started-ar-foundation
