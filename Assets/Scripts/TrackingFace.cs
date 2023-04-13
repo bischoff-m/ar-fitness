@@ -1,21 +1,30 @@
+using ARFitness.PlayerInput;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class TrackingFace : MonoBehaviour
+namespace ARFitness
 {
-    private TrackingProvider Tracking;
-
-    void Start()
+    public class TrackingFace : MonoBehaviour
     {
-        GameObject settingsObj = GameObject.Find("Settings");
-        Tracking = settingsObj.GetComponent<TrackingProvider>();
+        private FaceInputProvider _faceInput;
 
-        if (!settingsObj.GetComponent<Settings>().ShowFaceMesh)
-            this.GetComponent<ARFaceMeshVisualizer>().enabled = false;
-    }
+        private void Start()
+        {
+            if (InputProvider.IsAndroid)
+            {
+                _faceInput = InputProvider.Instance as FaceInputProvider;
+                _faceInput!.UpdateFace(this.gameObject);
+            }
 
-    void Update()
-    {
-        Tracking.SetFace(this.gameObject);
+            // Hide face mesh if disabled in settings
+            var settingsObj = GameObject.Find("Settings");
+            if (!settingsObj.GetComponent<Settings>().showFaceMesh)
+                this.GetComponent<ARFaceMeshVisualizer>().enabled = false;
+        }
+
+        private void Update()
+        {
+            _faceInput.UpdateFace(this.gameObject);
+        }
     }
 }

@@ -1,22 +1,21 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class Settings : MonoBehaviour
+namespace ARFitness
 {
-    public bool ShowCameraFeed = true;
-    public bool ShowFaceMesh = true;
-
-    void Start()
+    public class Settings : MonoBehaviour
     {
-        if (!ShowCameraFeed)
+        public bool showCameraFeed = false;
+        public bool showFaceMesh = false;
+
+        private void Start()
         {
-            GameObject camera = GameObject.Find("AR Camera");
-            camera.GetComponent<ARCameraBackground>().enabled = false;
+            if (!showCameraFeed)
+            {
+                var cam = GameObject.Find("AR Camera");
+                cam.GetComponent<ARCameraBackground>().enabled = false;
+            }
+            // TODO: implement option to show/hide the face mesh
         }
-    }
-
-    void Update()
-    {
-        
     }
 }

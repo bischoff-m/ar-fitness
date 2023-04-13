@@ -1,20 +1,39 @@
+using ARFitness.PlayerInput;
 using UnityEngine;
 
-public class Actor : MonoBehaviour
+namespace ARFitness
 {
-    private TrackingProvider Tracking;
-    private Vector3 velocity = Vector3.zero;
-
-    void Start()
+    /// <summary>
+    /// The main object that is controlled by the player.
+    /// Movement control is either based on AR face tracking or keyboard input, depending on the platform.
+    /// </summary>
+    public class Actor : MonoBehaviour
     {
-        Tracking = GameObject.Find("Settings").GetComponent<TrackingProvider>();
-    }
+        // Used to dampen the movement of the actor
+        private Vector3 _velocity = Vector3.zero;
+        
+        private void Update()
+        {
+            UpdatePos();
+            
+            // Move the actor to the position that is given by the input provider
+            var oldPos = this.transform.position;
+            var newPos = new Vector3(oldPos.x, InputProvider.Instance.GetPos().y * 4, oldPos.z);
+            this.transform.position = Vector3.SmoothDamp(oldPos, newPos, ref _velocity, 0.05f);
+        }
 
-    void Update()
-    {
-        Vector3 oldPos = this.transform.position;
-        Vector3 newPos = new Vector3(oldPos.x, Tracking.GetNormalizedPos().y * 4, oldPos.z);
-        this.transform.position = Vector3.SmoothDamp(oldPos, newPos, ref velocity, 0.05f);
-        Debug.Log(string.Format("Actor Pos: {0}", Tracking.GetNormalizedPos().y));
+        /// <summary>
+        /// In case of control via keyboard input, this tells the input provider whether keys were pressed.
+        /// </summary>
+        private static void UpdatePos()
+        {
+            if (InputProvider.IsAndroid) return;
+            var provider = InputProvider.Instance as KeyboardInputProvider;
+            
+            if (Input.GetKey(KeyCode.UpArrow))
+                provider!.Move(MoveDirection.Up);
+            if (Input.GetKey(KeyCode.DownArrow))
+                provider!.Move(MoveDirection.Down);
+        }
     }
 }
