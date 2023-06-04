@@ -1,6 +1,6 @@
 # ar-fitness
 
-Android game based on face detection using the camera
+Android game based on face detection using the camera. This is an unfinished test and I discontinued the project.
 
 # Quick Start
 
